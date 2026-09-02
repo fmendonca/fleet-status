@@ -1,4 +1,4 @@
-.PHONY: help dev-backend dev-frontend dev docker-build docker-push deploy install-openshift clean
+.PHONY: help dev-backend dev-frontend dev compose-up compose-down docker-build docker-push deploy install-openshift clean
 
 REGISTRY ?= quay.io/your-registry
 VERSION ?= latest
@@ -6,14 +6,16 @@ NAMESPACE ?= fleet-status
 
 help:
 	@echo "Fleet Status Dashboard - Available targets:"
-	@echo "  make dev-backend      - Run backend in development mode"
-	@echo "  make dev-frontend     - Run frontend in development mode"
-	@echo "  make dev              - Run both backend and frontend"
-	@echo "  make docker-build     - Build Docker images"
-	@echo "  make docker-push      - Push Docker images to registry"
-	@echo "  make deploy           - Deploy to OpenShift"
-	@echo "  make install-openshift - Install from scratch on OpenShift"
-	@echo "  make clean            - Remove build artifacts"
+	@echo "  make dev-backend       - Run backend in development mode"
+	@echo "  make dev-frontend      - Run frontend in development mode"
+	@echo "  make dev               - Run both backend and frontend"
+	@echo "  make compose-up        - Start with podman-compose"
+	@echo "  make compose-down      - Stop podman-compose containers"
+	@echo "  make docker-build      - Build Podman images"
+	@echo "  make docker-push       - Push images to registry"
+	@echo "  make deploy            - Deploy to OpenShift"
+	@echo "  make install-openshift - Build, push, and deploy"
+	@echo "  make clean             - Remove build artifacts"
 
 dev-backend:
 	cd backend && python -m venv venv && \
@@ -35,6 +37,15 @@ dev:
 	python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000) & \
 	(cd frontend && npm install && npm run dev) & \
 	wait
+
+compose-up:
+	@echo "Starting with podman-compose..."
+	@echo "Frontend: http://localhost:3000"
+	@echo "Backend: http://localhost:8000"
+	podman-compose up
+
+compose-down:
+	podman-compose down
 
 docker-build:
 	podman build -t $(REGISTRY)/fleet-status-backend:$(VERSION) ./backend
@@ -60,6 +71,7 @@ deploy:
 install-openshift: docker-build docker-push deploy
 
 clean:
+	podman-compose down -v
 	rm -rf backend/venv backend/__pycache__ backend/.pytest_cache
 	rm -rf frontend/node_modules frontend/.next
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true

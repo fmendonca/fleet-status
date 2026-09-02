@@ -42,7 +42,18 @@ oc whoami -t
 
 ## Getting Started (Development)
 
-### Backend Setup
+### Quick Start with Podman Compose
+
+```bash
+podman-compose up
+```
+
+Frontend: http://localhost:3000
+Backend: http://localhost:8000
+
+See [PODMAN.md](PODMAN.md) for detailed podman setup.
+
+### Backend Setup (Native)
 
 ```bash
 cd backend
@@ -69,7 +80,7 @@ python -m uvicorn app.main:app --reload
 
 Backend runs on `http://localhost:8000`
 
-### Frontend Setup
+### Frontend Setup (Native)
 
 ```bash
 cd frontend
