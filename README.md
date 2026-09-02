@@ -18,11 +18,12 @@ Key principles:
 
 ## Prerequisites
 
-- Red Hat OpenShift 4.10+
-- RHACM 2.5+ with Observability enabled
-- Python 3.12+
-- Node.js 18+
+- Red Hat OpenShift 4.20 (or 4.15+)
+- RHACM 2.16 with Observability enabled (or 2.5+)
+- Python 3.13+
+- Node.js 22 LTS+
 - kubectl/oc CLI access
+- Podman/Docker for building images
 
 ## Finding Thanos URL
 

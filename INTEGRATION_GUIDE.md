@@ -4,11 +4,11 @@ Step-by-step guide to integrate Fleet Status Dashboard with your RHACM environme
 
 ## Prerequisites
 
-- Red Hat OpenShift 4.10+ (hub cluster)
-- RHACM 2.5+ with Observability enabled
+- Red Hat OpenShift 4.20 (hub cluster) - or 4.15+
+- ACM (RHACM) 2.16 with Observability enabled - or 2.5+
 - At least 2 managed clusters registered
-- kubectl/oc CLI with admin access to hub cluster
-- docker/podman for building images
+- kubectl/oc CLI v4.20+ with admin access to hub cluster
+- Podman or Docker for building images
 - GitHub account with push access to deploy repo
 
 ## Step 1: Verify RHACM Observability Setup

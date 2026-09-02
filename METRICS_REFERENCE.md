@@ -317,16 +317,16 @@ data:
 
 ---
 
-## Metric Availability by RHACM Version
+## Metric Availability by ACM Version
 
-| Metric | 2.5 | 2.6 | 2.7 | 2.8 | 2.9 |
-|--------|-----|-----|-----|-----|-----|
-| acm_managed_cluster_info | ✓ | ✓ | ✓ | ✓ | ✓ |
-| kube_node_info | ✓ | ✓ | ✓ | ✓ | ✓ |
-| kube_node_status_condition | ✓ | ✓ | ✓ | ✓ | ✓ |
-| node_cpu_seconds_total | ✓ | ✓ | ✓ | ✓ | ✓ |
-| node_memory_* | ✓ | ✓ | ✓ | ✓ | ✓ |
-| ALERTS | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Metric | 2.5 | 2.6 | 2.7 | 2.8 | 2.9 | 2.10+ | 2.16 |
+|--------|-----|-----|-----|-----|-----|-------|------|
+| acm_managed_cluster_info | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| kube_node_info | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| kube_node_status_condition | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| node_cpu_seconds_total | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| node_memory_* | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| ALERTS | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 
 ---
 
