@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleet-status-frontend
+  namespace: fleet-status
+  labels:
+    app: fleet-status
+    component: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fleet-status
+      component: frontend
+  template:
+    metadata:
+      labels:
+        app: fleet-status
+        component: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: quay.io/fleet-status/frontend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: fleet-status-frontend-config
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 5
+          failureThreshold: 3
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleet-status-frontend
+  namespace: fleet-status
+  labels:
+    app: fleet-status
+    component: frontend
+spec:
+  selector:
+    app: fleet-status
+    component: frontend
+  ports:
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+    name: http
+  type: ClusterIP
+
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: fleet-status
+  namespace: fleet-status
+  labels:
+    app: fleet-status
+spec:
+  to:
+    kind: Service
+    name: fleet-status-frontend
+  port:
+    targetPort: 3000
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - THANOS_URL=${THANOS_URL:-http://thanos:9090}
+      - THANOS_TOKEN=${THANOS_TOKEN}
+      - THANOS_TLS_VERIFY=${THANOS_TLS_VERIFY:-false}
+      - CACHE_TTL=30
+      - CPU_WARNING=70
+      - CPU_HIGH=85
+      - CPU_CRITICAL=90
+      - MEMORY_WARNING=75
+      - MEMORY_HIGH=85
+      - MEMORY_CRITICAL=90
+      - MOCK_MODE=${MOCK_MODE:-true}
+    container_name: fleet-status-backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+    container_name: fleet-status-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  backend_data:
+  frontend_data:

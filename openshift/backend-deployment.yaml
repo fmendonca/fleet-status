@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleet-status-backend
+  namespace: fleet-status
+  labels:
+    app: fleet-status
+    component: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleet-status
+      component: backend
+  template:
+    metadata:
+      labels:
+        app: fleet-status
+        component: backend
+    spec:
+      serviceAccountName: fleet-status-backend
+      containers:
+      - name: backend
+        image: quay.io/fleet-status/backend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: fleet-status-backend-config
+        - secretRef:
+            name: fleet-status-backend-secret
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 5
+          failureThreshold: 3
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        volumeMounts:
+        - name: thanos-ca
+          mountPath: /etc/thanos-ca
+          readOnly: true
+      volumes:
+      - name: thanos-ca
+        configMap:
+          name: thanos-ca-cert
+          optional: true
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleet-status-backend
+  namespace: fleet-status
+  labels:
+    app: fleet-status
+    component: backend
+spec:
+  selector:
+    app: fleet-status
+    component: backend
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fleet-status-backend
+  namespace: fleet-status

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fleet-status-backend-config
+  namespace: fleet-status
+data:
+  CACHE_TTL: "30"
+  REFRESH_INTERVAL: "30"
+  CPU_WARNING: "70"
+  CPU_HIGH: "85"
+  CPU_CRITICAL: "90"
+  MEMORY_WARNING: "75"
+  MEMORY_HIGH: "85"
+  MEMORY_CRITICAL: "90"
+  HIGH_CPU_WINDOW: "5m"
+  HIGH_MEMORY_WINDOW: "5m"
+  METRICS_STALE_THRESHOLD: "5m"
+  ALERT_IGNORE_LIST: "Watchdog,InfoInhibitor"
+  THANOS_TLS_VERIFY: "true"
+  MOCK_MODE: "false"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fleet-status-frontend-config
+  namespace: fleet-status
+data:
+  NEXT_PUBLIC_API_URL: "http://fleet-status-backend:8000"
