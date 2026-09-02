@@ -5,5 +5,5 @@ pydantic==2.10.4
 pydantic-settings==2.6.1
 python-multipart==0.0.9
 prometheus-client==0.21.0
-python-json-logger==2.0.8
+python-json-logger==4.2.0
 python-dotenv==1.0.1
